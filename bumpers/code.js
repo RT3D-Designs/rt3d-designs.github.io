@@ -91,7 +91,7 @@ const DesignCode = (() => {
 
   // Wall letter codes (Letter Studio, 2026-11-06): RTL1- + the same packing.
   // { n: order name, w: [ { x: the letters (A–Z), f: font key, z: size S | M | L, e: finish matte | fuzzy, c: [ a colour per letter, or just one ] } ] }
-  const LETTER_PREFIX = "RTL1-", LETTER_FONTS = { sniglet: "Round and bubbly", titan: "Bold and blocky" }, LETTER_FINISHES = { matte: "Matt", fuzzy: "Fuzzy" };
+  const LETTER_PREFIX = "RTL1-", LETTER_FONTS = { sniglet: "Round and bubbly", titan: "Bold and blocky" }, LETTER_FINISHES = { matte: "Matte", fuzzy: "Fuzzy" };
   const cleanWord = s => String(s || "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 16);
   async function encodeLetters(design) {
     const slim = {};

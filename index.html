@@ -32,7 +32,7 @@ body{color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,s
       <p>Custom bottle bumpers, bag tags and wall letters. Pick the shape, colours and name, see it in 3D, and we'll print exactly what you design.</p>
       <div class="cta"><a class="go" href="#products">Start designing</a><a class="alt" href="#how">How it works</a></div>
     </div>
-    <div class="hero-view"><canvas id="heroLetters" aria-label="Puffy 3D letters spelling different names"></canvas><span class="hero-tag" id="heroTag" aria-hidden="true">Round and bubbly · Matt</span></div>
+    <div class="hero-view"><canvas id="heroLetters" aria-label="Puffy 3D letters spelling different names"></canvas><span class="hero-tag" id="heroTag" aria-hidden="true">Round and bubbly · Matte</span></div>
   </header>
 
   <div class="marquee" aria-hidden="true"><div id="names"></div></div>
@@ -53,8 +53,8 @@ body{color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,s
       </a>
       <a class="product reveal" href="letters/">
         <div class="pic"><img src="img/letters.jpg" alt="Puffy 3D wall letters in soft colours"><i>New</i></div>
-        <div class="body"><h3>Wall letters</h3><p>Puffy, pillowy letters that spell out any name, in a soft matt or fuzzy finish, with flat backs made to suit Command strips.</p>
-          <ul><li>A to Z</li><li>2 styles</li><li>3 sizes</li><li>Matt or fuzzy</li><li>49 colours</li></ul><span class="open">Design your letters <b>→</b></span></div>
+        <div class="body"><h3>Wall letters</h3><p>Puffy, pillowy letters that spell out any name, in a soft matte or fuzzy finish, with flat backs made to suit Command strips.</p>
+          <ul><li>A to Z</li><li>2 styles</li><li>3 sizes</li><li>Matte or fuzzy</li><li>49 colours</li></ul><span class="open">Design your letters <b>→</b></span></div>
       </a>
     </div>
   </section>
@@ -120,7 +120,7 @@ if (!reduced && matchMedia("(hover: hover)").matches) document.querySelectorAll(
   const canvas = document.getElementById("heroLetters"), tag = document.getElementById("heroTag"), view = LetterView.create(canvas); if (!view) return;
   const hex = h => [1, 3, 5].map(i => parseInt(h.substr(i, 2), 16) / 255);
   const SETS = [["#1c68c4", "#9aa6b5", "#e6e9ee", "#3f93e8", "#5d6b7d"], ["#f7c9d4", "#f8e8a6", "#bcdcee", "#c6ead8", "#dccdf0"], ["#a2cdea", "#6f93dc", "#d5ecf5", "#1f5fd1", "#8aa5c0"], ["#f9d2b8", "#a9bb9c", "#e6dcc8", "#c46a4b", "#cde2ad"], ["#c0b0e6", "#e8a6b6", "#7fd3d6", "#f4f1ea", "#f6b98c"]];
-  const STYLE = { sniglet: "Round and bubbly", titan: "Bold and blocky" }, FINISH = { matte: "Matt", fuzzy: "Fuzzy" };
+  const STYLE = { sniglet: "Round and bubbly", titan: "Bold and blocky" }, FINISH = { matte: "Matte", fuzzy: "Fuzzy" };
   const SHOW = [["YOURS", "sniglet", "matte"], ["ISLA", "sniglet", "fuzzy"], ["NOAH", "titan", "matte"], ["RUBY", "sniglet", "matte"], ["OLIVER", "titan", "fuzzy"], ["MIA", "sniglet", "fuzzy"], ["THEO", "titan", "matte"], ["POPPY", "sniglet", "matte"], ["LEO", "titan", "fuzzy"], ["HAZEL", "sniglet", "fuzzy"], ["FINN", "titan", "matte"], ["WILLOW", "sniglet", "matte"]];
   const cache = new Map();
   const mesh = (f, ch) => { const k = f + ch; if (!cache.has(k)) cache.set(k, LetterView.loadPreview(`letters/letters/${f}/preview/${ch}.bin`)); return cache.get(k); };

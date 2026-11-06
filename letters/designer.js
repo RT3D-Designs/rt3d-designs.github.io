@@ -22,7 +22,7 @@ const clean = DesignCode.cleanWord;
 const fill = w => { const x = clean(w.x), last = w.c[w.c.length - 1] || "Pastel Rose"; w.c = [...x].map((_, i) => w.c[i] || last); if (!w.c.length) w.c = [last]; return w; };
 const newWord = from => from ? fill({ x: "", f: from.f, z: from.z, e: from.e, c: [from.c[0]] }) : fill({ x: "", f: "sniglet", z: "M", e: "matte", c: ["Pastel Rose"] });
 const label = (w, i) => clean(w.x) || `Name ${i + 1}`;
-const FINISH_HINT = { matte: "A smooth, soft matt surface.", fuzzy: "A textured, felt-like fuzzy surface." };
+const FINISH_HINT = { matte: "A smooth, soft matte surface.", fuzzy: "A textured, felt-like fuzzy surface." };
 const describe = w => `${STYLE[w.f]} · ${TALL[w.z]} mm tall · ${DesignCode.LETTER_FINISHES[w.e || "matte"]} · ${[...new Set(w.c)].join(", ")}`;
 
 function render() {
