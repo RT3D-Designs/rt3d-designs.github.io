@@ -1,5 +1,5 @@
 // The 3D view of a row of wall letters, shared by Letter Studio, the customer designer and the front page: each letter has its
-// own colour, lit as a soft matt surface or roughened for the fuzzy finish. Drag to turn it. Meshes come from loadPreview (the small letters\<font>\preview\X.bin).
+// own colour, lit as a soft matte surface or roughened for the fuzzy finish. Drag to turn it. Meshes come from loadPreview (the small letters\<font>\preview\X.bin).
 "use strict";
 
 const LetterView = (() => {
