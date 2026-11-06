@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RT3D Customisers</title>
+<meta name="description" content="Design your own 3D-printed Bottle Bumperz, TPU bag tags and puffy wall letters. Made to order by RT 3D Design and Printing in Australia.">
+<meta property="og:title" content="RT3D: design it, make it yours">
+<meta property="og:description" content="Custom bottle bumpers, bag tags and wall letters, designed by you and 3D printed to order.">
+<meta property="og:image" content="img/letters.jpg">
+<link rel="icon" href="letters/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap">
+<link rel="stylesheet" href="rt3d.css">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+html{scroll-behavior:smooth}
+body{color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+</style>
+</head>
+<body class="home">
+<i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
+
+<main>
+  <header class="wrapx hero">
+    <div>
+      <span class="kicker">3D printed to order · Australia</span>
+      <h1>Design it.<br><span>Make it yours.</span></h1>
+      <p>Custom bottle bumpers, bag tags and wall letters. Pick the shape, colours and name, see it in 3D, and we'll print exactly what you design.</p>
+      <div class="cta"><a class="go" href="#products">Start designing</a><a class="alt" href="#how">How it works</a></div>
+    </div>
+    <div class="hero-view"><canvas id="heroLetters" aria-label="Puffy 3D letters spelling different names"></canvas><span class="hero-tag" id="heroTag" aria-hidden="true">Round and bubbly · Matt</span></div>
+  </header>
+
+  <div class="marquee" aria-hidden="true"><div id="names"></div></div>
+
+  <section class="sec wrapx" id="products">
+    <h2 class="reveal">Pick what you want to make</h2>
+    <p class="lead reveal">Every one is designed by you in your browser, on your phone or computer. Nothing to install.</p>
+    <div class="products">
+      <a class="product reveal" href="bumpers/">
+        <div class="pic"><img src="img/bumpers.jpg" alt="A custom bottle bumper with a name on it"><i>Bottle boots</i></div>
+        <div class="body"><h3>Bottle Bumperz</h3><p>Flexible TPU boots that protect your bottle, with your name cut in or raised on the side.</p>
+          <ul><li>Yeti</li><li>Stanley</li><li>Owala</li><li>38 emotes</li></ul><span class="open">Design your bumper <b>→</b></span></div>
+      </a>
+      <a class="product reveal" href="bag-tags/">
+        <div class="pic" id="tagPics"><img class="on" src="img/tags/1.jpg" alt="A name-shaped bag tag with a keyring hole"><i>Two colours</i><b class="caption" id="tagCaption">Name-shaped · keyring hole</b></div>
+        <div class="body"><h3>TPU bag tags</h3><p>Tough, flexible tags in two colours for school bags, luggage and sports gear.</p>
+          <ul><li>6 shapes</li><li>3 sizes</li><li>Hole, slot or loop</li></ul><span class="open">Design your tag <b>→</b></span></div>
+      </a>
+      <a class="product reveal" href="letters/">
+        <div class="pic"><img src="img/letters.jpg" alt="Puffy 3D wall letters in soft colours"><i>New</i></div>
+        <div class="body"><h3>Wall letters</h3><p>Puffy, pillowy letters that spell out any name, in a soft matt or fuzzy finish, with flat backs made to suit Command strips.</p>
+          <ul><li>A to Z</li><li>2 styles</li><li>3 sizes</li><li>Matt or fuzzy</li><li>49 colours</li></ul><span class="open">Design your letters <b>→</b></span></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="sec wrapx" id="how">
+    <h2 class="reveal">Three easy steps</h2>
+    <p class="lead reveal">No files, no fuss. Your whole design fits in one short code.</p>
+    <div class="steps">
+      <div class="step reveal"><h3>Design it</h3><p>Choose your product, then add the name, colours and style. Spin it round in 3D until it's right.</p></div>
+      <div class="step reveal"><h3>Copy your code</h3><p>Tap the button to get your design code. Order more than one item? They all go in the same code.</p></div>
+      <div class="step reveal"><h3>We print it</h3><p>Paste the code into your order. We open your exact design and 3D print it for you.</p></div>
+    </div>
+  </section>
+
+  <section class="sec wrapx">
+    <div class="nums">
+      <div class="num reveal"><b data-count="3">0</b><small>products to design</small></div>
+      <div class="num reveal"><b data-count="10">0</b><small>bottle boot fits</small></div>
+      <div class="num reveal"><b data-count="38">0</b><small>emotes for names</small></div>
+      <div class="num reveal"><b data-count="26">0</b><small>puffy letters, A to Z</small></div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot"><div class="wrapx"><span><b>RT 3D Design and Printing</b> · Designed and printed in Australia · Scrolling names are common first names, some from recent orders</span><span><a href="bumpers/">Bottle Bumperz</a> · <a href="bag-tags/">Bag tags</a> · <a href="letters/">Wall letters</a></span></div></footer>
+
+<script src="rt3d.js"></script>
+<script src="letters/letterview.js"></script>
+<script>
+"use strict";
+// names drifting across the page
+const NAMES = ["OLIVER", "MIA", "NOAH", "ISLA", "LEO", "AVA", "HENRY", "CHLOE", "JACK", "RUBY", "THEO", "GRACE", "FINN", "ZOE", "ARCHIE", "WILLOW", "HUDSON", "POPPY", "LUCAS", "EVIE", "HARVEY", "IVY", "MASON", "SIENNA", "OSCAR", "MATILDA", "ETHAN", "HAZEL", "LOGAN", "ELSIE", "CHARLIE", "ROSE", "TOBY", "PIPER", "MAX", "SOPHIE", "BEAU", "ELLA", "COOPER", "MILA", "ASHER", "DAISY", "EDDIE", "NINA", "FELIX", "LILY", "GUS", "AMELIA", "SAM", "HARPER", "RILEY", "FRANKIE", "JASPER", "ADDISON", "KAI", "TESS", "REMY", "BONNIE", "NED", "PENNY"];
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+// the same list twice, moved by exactly one list's width, so the join never shows
+const showNames = list => { document.getElementById("names").innerHTML = [...list, ...list].map(n => `<span>${n}</span>`).join(""); };
+showNames(shuffle(NAMES));
+// names from recent orders (refresh-names.ps1), topped up from the list above to keep the scroll full
+fetch("names.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null).then(d => {
+  const recent = d && Array.isArray(d.names) ? shuffle(d.names.filter(n => /^[A-Z]{2,14}$/.test(n))).slice(0, 60) : [];
+  if (recent.length) showNames(shuffle([...new Set([...recent, ...NAMES])].slice(0, 60)));
+}).catch(() => {});
+// things rising in as you scroll, and the numbers counting up
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const count = el => { const end = +el.dataset.count; if (reduced) { el.textContent = end; return; } const t0 = performance.now(); const tick = t => { const k = Math.min((t - t0) / 1100, 1); el.textContent = Math.round(end * (1 - (1 - k) ** 3)); if (k < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); };
+const seen = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; e.target.classList.add("in"); const n = e.target.querySelector("[data-count]"); if (n) count(n); seen.unobserve(e.target); }), { threshold: .14 });
+document.querySelectorAll(".reveal").forEach(el => seen.observe(el));
+// product cards tilt towards the pointer
+if (!reduced && matchMedia("(hover: hover)").matches) document.querySelectorAll(".product").forEach(c => {
+  c.addEventListener("pointermove", e => { const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; c.style.transform = `translateY(-5px) rotateY(${x * 7}deg) rotateX(${-y * 7}deg)`; });
+  c.addEventListener("pointerleave", () => { c.style.transform = ""; });
+});
+// the bag tag card works through every tag type
+(() => {
+  const TAGS = [["1", "Name-shaped · keyring hole"], ["2", "Luggage tag · strap slot"], ["3", "Rectangle · clip hole"], ["4", "Round · keyring hole"], ["5", "Shield · cable-tie hole"], ["6", "Heart · clip hole"], ["7", "Name-shaped · built-in loop"]];
+  if (reduced) return;
+  const box = document.getElementById("tagPics"), cap = document.getElementById("tagCaption"), pics = [box.querySelector("img")];
+  TAGS.slice(1).forEach(([n, label]) => { const im = new Image(); im.src = `img/tags/${n}.jpg`; im.alt = `A bag tag: ${label}`; im.loading = "eager"; box.insertBefore(im, box.querySelector("i")); pics.push(im); });
+  let at = 0;
+  setInterval(() => { if (document.hidden) return; pics[at].classList.remove("on"); at = (at + 1) % pics.length; pics[at].classList.add("on"); cap.textContent = TAGS[at][1]; cap.classList.remove("pop"); void cap.offsetWidth; cap.classList.add("pop"); }, 3000);
+})();
+// the wall letters in the hero work through names, styles and finishes
+(async () => {
+  const canvas = document.getElementById("heroLetters"), tag = document.getElementById("heroTag"), view = LetterView.create(canvas); if (!view) return;
+  const hex = h => [1, 3, 5].map(i => parseInt(h.substr(i, 2), 16) / 255);
+  const SETS = [["#1c68c4", "#9aa6b5", "#e6e9ee", "#3f93e8", "#5d6b7d"], ["#f7c9d4", "#f8e8a6", "#bcdcee", "#c6ead8", "#dccdf0"], ["#a2cdea", "#6f93dc", "#d5ecf5", "#1f5fd1", "#8aa5c0"], ["#f9d2b8", "#a9bb9c", "#e6dcc8", "#c46a4b", "#cde2ad"], ["#c0b0e6", "#e8a6b6", "#7fd3d6", "#f4f1ea", "#f6b98c"]];
+  const STYLE = { sniglet: "Round and bubbly", titan: "Bold and blocky" }, FINISH = { matte: "Matt", fuzzy: "Fuzzy" };
+  const SHOW = [["YOURS", "sniglet", "matte"], ["ISLA", "sniglet", "fuzzy"], ["NOAH", "titan", "matte"], ["RUBY", "sniglet", "matte"], ["OLIVER", "titan", "fuzzy"], ["MIA", "sniglet", "fuzzy"], ["THEO", "titan", "matte"], ["POPPY", "sniglet", "matte"], ["LEO", "titan", "fuzzy"], ["HAZEL", "sniglet", "fuzzy"], ["FINN", "titan", "matte"], ["WILLOW", "sniglet", "matte"]];
+  const cache = new Map();
+  const mesh = (f, ch) => { const k = f + ch; if (!cache.has(k)) cache.set(k, LetterView.loadPreview(`letters/letters/${f}/preview/${ch}.bin`)); return cache.get(k); };
+  const load = ([word, f]) => Promise.all([...word].map(ch => mesh(f, ch)));
+  const show = (meshes, [word, f, e], n) => { const set = SETS[n % SETS.length]; view.set(meshes.map((m, i) => ({ mesh: m, colour: hex(set[i % set.length]), finish: e })), 5); tag.textContent = `${STYLE[f]} · ${FINISH[e]}`; };
+  show(await load(SHOW[0]), SHOW[0], 0);
+  view.sway();
+  if (reduced) return;
+  let at = 0;
+  setInterval(async () => {
+    if (document.hidden) return;
+    at = (at + 1) % SHOW.length;
+    const meshes = await load(SHOW[at]);        // ready before the old name fades, so nothing flashes empty
+    canvas.classList.add("fading"); tag.classList.add("fading");
+    setTimeout(() => { show(meshes, SHOW[at], at); canvas.classList.remove("fading"); tag.classList.remove("fading"); }, 420);
+  }, 4200);
+})().catch(() => { document.querySelector(".hero-view").hidden = true; });
+</script>
+</body>
+</html>

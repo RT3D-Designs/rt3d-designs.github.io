@@ -1,0 +1,8 @@
+/* RT3D bag tag designer: the bumper designer's styles (designer.css, copied at build) with RT3D blue as the accent. */
+:root{--red:#1e6db8}
+@media (prefers-color-scheme: dark){ :root{--red:#2f86d6} }
+.tagmark{width:32px;height:32px;border-radius:8px;flex:none}
+.tag-meta{padding:9px 14px;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+.chip.soon{opacity:.6}
+.chip.soon small{margin-left:5px;font-size:11px}
+.swatches + h2{margin-top:18px}

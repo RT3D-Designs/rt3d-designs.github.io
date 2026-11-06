@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RT3D Bag Tags</title>
+<meta name="description" content="Design your own flexible TPU bag tag: pick a shape, colours, name and emotes, then copy your design code into your order.">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Great+Vibes&family=Nunito:wght@900&family=Oswald:wght@600&family=Outfit:wght@700&display=swap">
+<link rel="stylesheet" href="designer.css">
+<link rel="stylesheet" href="tag-designer.css">
+<link rel="stylesheet" href="../rt3d.css">
+</head>
+<body>
+<header class="top">
+  <img class="tagmark" src="icon.png" alt="" aria-hidden="true">
+  <div><div class="brand">RT3D Bag Tags</div><div class="sub">Design your tag</div></div>
+  <span class="sp"></span>
+  <button class="link" id="openCode" type="button">Have a code?</button>
+</header>
+
+<main class="wrap">
+  <section class="preview-card">
+    <div class="tabs" id="tabs"></div>
+    <div class="view"><canvas id="view" aria-label="Your tag, drag to spin"></canvas><span class="hint spin">Drag to spin</span></div>
+    <div class="tag-meta" id="meta"></div>
+    <div class="warn" id="warn" hidden></div>
+  </section>
+
+  <section class="controls">
+    <div class="card">
+      <h2><b>1</b>Tag style</h2>
+      <div class="chips" id="shapes"></div>
+      <div class="label">Size</div>
+      <div class="seg" id="size">
+        <button type="button" data-v="S">Small<small>about 70 mm</small></button>
+        <button type="button" data-v="M">Medium<small>about 100 mm</small></button>
+        <button type="button" data-v="L">Large<small>about 130 mm</small></button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><b>2</b>Attach with</h2>
+      <div class="chips" id="attach"></div>
+      <p class="hint" id="attachHint" style="margin:10px 0 0"></p>
+    </div>
+
+    <div class="card">
+      <h2><b>3</b>Your text</h2>
+      <div id="lines"></div>
+    </div>
+
+    <div class="card">
+      <h2><b>4</b>Backing colour <span class="picked" id="c1Name"></span></h2>
+      <div class="swatches" id="c1"></div>
+      <h2 style="margin-top:18px"><b>5</b>Letter colour <span class="picked" id="c2Name"></span></h2>
+      <div class="swatches" id="c2"></div>
+    </div>
+
+    <div class="card order">
+      <h2><b>6</b>Your order <span class="picked" id="orderCount"></span></h2>
+      <p class="hint" style="margin:0 0 10px">Ordering more than one? Add each tag here: they all go in the same design code.</p>
+      <div class="order-list" id="orderList"></div>
+      <button class="btn add-big" id="addTag2" type="button"><span>+</span> Add another tag</button>
+    </div>
+  </section>
+</main>
+
+<footer class="bar">
+  <button class="btn" id="addTag" type="button" title="Design another tag for the same order">+ Add tag</button>
+  <button class="btn primary" id="getCode" type="button">Get my design code</button>
+</footer>
+
+<dialog id="nameDlg">
+  <h3>Who's this order for?</h3>
+  <p class="hint">Your name or eBay username, so we can match your design to your order.</p>
+  <input type="text" id="orderName" maxlength="40" autocomplete="name" placeholder="e.g. Sarah J or sarahj_88">
+  <p class="hint err" id="nameErr"></p>
+  <p class="hint small" id="nameSummary"></p>
+  <div class="dlg-end"><button class="btn ghost" id="nameBack" type="button">Back</button><button class="btn primary" id="nameOk" type="button">Continue</button></div>
+</dialog>
+
+<dialog id="codeDlg">
+  <h3>Your design code</h3>
+  <p class="hint">Copy this code and paste it into the <b>personalisation</b> box when you order on eBay (or send it to us in a message). We'll print exactly this design.</p>
+  <div class="code" id="codeText"></div>
+  <div class="row-btns">
+    <button class="btn primary" id="copyCode" type="button">Copy code</button>
+    <button class="btn" id="copyLink" type="button">Copy link to this design</button>
+  </div>
+  <p class="hint small" id="codeSummary"></p>
+  <div class="dlg-end"><button class="btn ghost" id="closeCode" type="button">Back to my design</button></div>
+</dialog>
+
+<dialog id="loadDlg">
+  <h3>Open a design code</h3>
+  <p class="hint">Paste a bag tag code (it starts with RTT1-) to see it or change it.</p>
+  <textarea id="loadText" rows="3" spellcheck="false" placeholder="RTT1-…"></textarea>
+  <p class="hint err" id="loadErr"></p>
+  <div class="dlg-end"><button class="btn ghost" id="loadCancel" type="button">Cancel</button><button class="btn primary" id="loadOk" type="button">Open</button></div>
+</dialog>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="emotes.js"></script>
+<script src="code.js"></script>
+<script src="engine.js"></script>
+<script src="view3d.js"></script>
+<script src="earcut.js"></script>
+<script src="tags.js"></script>
+<script src="designer.js"></script>
+<script src="../rt3d.js"></script>
+</body>
+</html>

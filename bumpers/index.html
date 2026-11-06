@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bottle Bumperz Designer</title>
+<meta name="description" content="Design your own Bottle Bumperz boot: pick your bottle, colour, name and emotes, then copy your design code into your order.">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Great+Vibes&family=Nunito:wght@900&family=Oswald:wght@600&family=Outfit:wght@700&display=swap">
+<link rel="stylesheet" href="designer.css">
+<link rel="stylesheet" href="../rt3d.css">
+</head>
+<body>
+<header class="top">
+  <span class="ring" aria-hidden="true"></span>
+  <div><div class="brand">Bottle Bumperz</div><div class="sub">Design your bumper</div></div>
+  <span class="sp"></span>
+  <button class="link" id="openCode" type="button">Have a code?</button>
+</header>
+
+<main class="wrap">
+  <section class="preview-card">
+    <div class="tabs" id="tabs"></div>
+    <div class="view"><canvas id="view" aria-label="Your bumper, drag to spin"></canvas><span class="hint spin">Drag to spin</span></div>
+    <div class="warn" id="warn" hidden></div>
+  </section>
+
+  <section class="controls">
+    <div class="card">
+      <h2><b>1</b>Your bottle</h2>
+      <div class="chips" id="brands"></div>
+      <div class="chips sizes" id="sizes"></div>
+    </div>
+
+    <div class="card">
+      <h2><b>2</b>Colour <span class="picked" id="colourName"></span></h2>
+      <div class="swatches" id="colours"></div>
+    </div>
+
+    <div class="card">
+      <h2><b>3</b>Your text</h2>
+      <div id="lines"></div>
+      <button class="btn ghost" id="addLine" type="button">+ Add another line</button>
+    </div>
+
+    <div class="card">
+      <h2><b>4</b>Style</h2>
+      <div class="seg" id="style">
+        <button type="button" data-v="e">Engraved<small>cut into the bumper</small></button>
+        <button type="button" data-v="r">Raised<small>stands out from it</small></button>
+      </div>
+    </div>
+
+    <div class="card order">
+      <h2><b>5</b>Your order <span class="picked" id="orderCount"></span></h2>
+      <p class="hint" style="margin:0 0 10px">Ordering more than one? Add each bumper here: they all go in the same design code.</p>
+      <div class="order-list" id="orderList"></div>
+      <button class="btn add-big" id="addBumper2" type="button"><span>+</span> Add another bumper</button>
+    </div>
+  </section>
+</main>
+
+<footer class="bar">
+  <button class="btn" id="addBumper" type="button" title="Design another bumper for the same order">+ Add bumper</button>
+  <button class="btn primary" id="getCode" type="button">Get my design code</button>
+</footer>
+
+<dialog id="nameDlg">
+  <h3>Who's this order for?</h3>
+  <p class="hint">Your name or eBay username, so we can match your design to your order.</p>
+  <input type="text" id="orderName" maxlength="40" autocomplete="name" placeholder="e.g. Sarah J or sarahj_88">
+  <p class="hint err" id="nameErr"></p>
+  <p class="hint small" id="nameSummary"></p>
+  <div class="dlg-end"><button class="btn ghost" id="nameBack" type="button">Back</button><button class="btn primary" id="nameOk" type="button">Continue</button></div>
+</dialog>
+
+<dialog id="codeDlg">
+  <h3>Your design code</h3>
+  <p class="hint">Copy this code and paste it into the <b>personalisation</b> box when you order on eBay (or send it to us in a message). We'll print exactly this design.</p>
+  <div class="code" id="codeText"></div>
+  <div class="row-btns">
+    <button class="btn primary" id="copyCode" type="button">Copy code</button>
+    <button class="btn" id="copyLink" type="button">Copy link to this design</button>
+  </div>
+  <p class="hint small" id="codeSummary"></p>
+  <div class="dlg-end"><button class="btn ghost" id="closeCode" type="button">Back to my design</button></div>
+</dialog>
+
+<dialog id="loadDlg">
+  <h3>Open a design code</h3>
+  <p class="hint">Paste a Bottle Bumperz code (it starts with BBZ1-) to see it or change it.</p>
+  <textarea id="loadText" rows="3" spellcheck="false" placeholder="BBZ1-…"></textarea>
+  <p class="hint err" id="loadErr"></p>
+  <div class="dlg-end"><button class="btn ghost" id="loadCancel" type="button">Cancel</button><button class="btn primary" id="loadOk" type="button">Open</button></div>
+</dialog>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="emotes.js"></script>
+<script src="code.js"></script>
+<script src="engine.js"></script>
+<script src="view3d.js"></script>
+<script src="designer.js"></script>
+<script src="../rt3d.js"></script>
+</body>
+</html>
