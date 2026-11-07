@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>RT3D Bag Tags</title>
-<meta name="description" content="Design your own flexible TPU bag tag: pick a shape, colours, name and emotes, then copy your design code into your order.">
+<meta name="description" content="Design your own flexible TPU bag tag: pick a shape, colours, name, font and icons, then copy your design code into your order.">
 <link rel="icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Great+Vibes&family=Nunito:wght@900&family=Oswald:wght@600&family=Outfit:wght@700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap">
 <link rel="stylesheet" href="designer.css">
 <link rel="stylesheet" href="tag-designer.css">
 <link rel="stylesheet" href="../rt3d.css">
@@ -21,7 +21,7 @@
   <button class="link" id="openCode" type="button">Have a code?</button>
 </header>
 
-<main class="wrap">
+<main class="wrap stepped">
   <section class="preview-card">
     <div class="tabs" id="tabs"></div>
     <div class="view"><canvas id="view" aria-label="Your tag, drag to spin"></canvas><span class="hint spin">Drag to spin</span></div>
@@ -30,46 +30,62 @@
   </section>
 
   <section class="controls">
-    <div class="card">
-      <h2><b>1</b>Tag style</h2>
-      <div class="chips" id="shapes"></div>
-      <div class="label">Size</div>
-      <div class="seg" id="size">
-        <button type="button" data-v="S">Small<small>about 70 mm</small></button>
-        <button type="button" data-v="M">Medium<small>about 100 mm</small></button>
-        <button type="button" data-v="L">Large<small>about 130 mm</small></button>
+    <details class="card dstep" name="steps" id="stepText" open>
+      <summary><b>1</b><span class="step-title">Your text</span><span class="step-now" id="nowText"></span></summary>
+      <div class="step-body">
+        <div id="lines"></div>
+        <button class="btn next" type="button" data-next="stepShape">Next: shape and size</button>
       </div>
-    </div>
+    </details>
 
-    <div class="card">
-      <h2><b>2</b>Attach with</h2>
-      <div class="chips" id="attach"></div>
-      <p class="hint" id="attachHint" style="margin:10px 0 0"></p>
-    </div>
+    <details class="card dstep" name="steps" id="stepShape">
+      <summary><b>2</b><span class="step-title">Shape and size</span><span class="step-now" id="nowShape"></span></summary>
+      <div class="step-body">
+        <div class="shape-tiles" id="shapes"></div>
+        <div class="label">Size</div>
+        <div class="seg" id="size">
+          <button type="button" data-v="S">Small<small>about 70 mm</small></button>
+          <button type="button" data-v="M">Medium<small>about 100 mm</small></button>
+          <button type="button" data-v="L">Large<small>about 130 mm</small></button>
+        </div>
+        <button class="btn next" type="button" data-next="stepAttach">Next: how it attaches</button>
+      </div>
+    </details>
 
-    <div class="card">
-      <h2><b>3</b>Your text</h2>
-      <div id="lines"></div>
-    </div>
+    <details class="card dstep" name="steps" id="stepAttach">
+      <summary><b>3</b><span class="step-title">How it attaches</span><span class="step-now" id="nowAttach"></span></summary>
+      <div class="step-body">
+        <div class="chips" id="attach"></div>
+        <p class="hint" id="attachHint" style="margin:10px 0 0"></p>
+        <button class="btn next" type="button" data-next="stepColour">Next: colours</button>
+      </div>
+    </details>
 
-    <div class="card">
-      <h2><b>4</b>Backing colour <span class="picked" id="c1Name"></span></h2>
-      <div class="swatches" id="c1"></div>
-      <h2 style="margin-top:18px"><b>5</b>Letter colour <span class="picked" id="c2Name"></span></h2>
-      <div class="swatches" id="c2"></div>
-    </div>
+    <details class="card dstep" name="steps" id="stepColour">
+      <summary><b>4</b><span class="step-title">Colours</span><span class="step-now" id="nowColour"></span></summary>
+      <div class="step-body">
+        <div class="seg" id="colourFor">
+          <button type="button" data-v="c"><i class="dot" id="c1Dot"></i>Backing<small id="c1Name"></small></button>
+          <button type="button" data-v="k"><i class="dot" id="c2Dot"></i>Letters<small id="c2Name"></small></button>
+        </div>
+        <div class="swatches" id="colours" style="margin-top:12px"></div>
+        <button class="btn next" type="button" data-next="stepOrder">Next: check your order</button>
+      </div>
+    </details>
 
-    <div class="card order">
-      <h2><b>6</b>Your order <span class="picked" id="orderCount"></span></h2>
-      <p class="hint" style="margin:0 0 10px">Ordering more than one? Add each tag here: they all go in the same design code.</p>
-      <div class="order-list" id="orderList"></div>
-      <button class="btn add-big" id="addTag2" type="button"><span>+</span> Add another tag</button>
-    </div>
+    <details class="card dstep order" name="steps" id="stepOrder">
+      <summary><b>5</b><span class="step-title">Your order</span><span class="step-now" id="orderCount"></span></summary>
+      <div class="step-body">
+        <p class="hint" style="margin:0 0 10px">Ordering more than one? Add each tag here: they all go in the same design code.</p>
+        <div class="order-list" id="orderList"></div>
+        <button class="btn add-big" id="addTag2" type="button"><span>+</span> Add another tag</button>
+      </div>
+    </details>
   </section>
 </main>
 
-<footer class="bar">
-  <button class="btn" id="addTag" type="button" title="Design another tag for the same order">+ Add tag</button>
+<footer class="bar with-sum">
+  <div class="bar-sum" id="barSum"></div>
   <button class="btn primary" id="getCode" type="button">Get my design code</button>
 </footer>
 
@@ -110,6 +126,7 @@
 <script src="view3d.js"></script>
 <script src="earcut.js"></script>
 <script src="tags.js"></script>
+<script src="picker.js"></script>
 <script src="designer.js"></script>
 <script src="../rt3d.js"></script>
 </body>

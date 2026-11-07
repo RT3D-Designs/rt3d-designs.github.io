@@ -21,7 +21,7 @@
   <button class="link" id="openCode" type="button">Have a code?</button>
 </header>
 
-<main class="wrap">
+<main class="wrap stepped">
   <section class="preview-card">
     <div class="tabs" id="tabs"></div>
     <div class="view"><canvas id="view" aria-label="Your letters, drag to turn"></canvas><span class="hint spin">Drag to turn</span></div>
@@ -30,48 +30,58 @@
   </section>
 
   <section class="controls">
-    <div class="card">
-      <h2><b>1</b>Your name</h2>
-      <input type="text" id="word" maxlength="16" placeholder="Type a name" autocomplete="off" autocapitalize="characters">
-      <p class="hint" style="margin:8px 0 0">Letters A to Z, up to 16 per name.</p>
-    </div>
-
-    <div class="card">
-      <h2><b>2</b>Letter style</h2>
-      <div class="chips" id="styles"></div>
-      <div class="label">Size</div>
-      <div class="seg" id="size">
-        <button type="button" data-v="S">Small<small>80 mm tall</small></button>
-        <button type="button" data-v="M">Medium<small>120 mm tall</small></button>
-        <button type="button" data-v="L">Large<small>160 mm tall</small></button>
+    <details class="card dstep" name="steps" id="stepName" open>
+      <summary><b>1</b><span class="step-title">Name and font</span><span class="step-now" id="nowName"></span></summary>
+      <div class="step-body">
+        <input type="text" id="word" maxlength="16" placeholder="Type a name" autocomplete="off" autocapitalize="characters" aria-label="The name">
+        <p class="hint" style="margin:6px 0 10px">Letters A to Z, up to 16 per name.</p>
+        <div id="stylePick"></div>
+        <button class="btn next" type="button" data-next="stepSize">Next: size and finish</button>
       </div>
-      <div class="label">Finish</div>
-      <div class="seg" id="finish">
-        <button type="button" data-v="matte">Matte<small>smooth and soft</small></button>
-        <button type="button" data-v="fuzzy">Fuzzy<small>textured, felt-like</small></button>
+    </details>
+
+    <details class="card dstep" name="steps" id="stepSize">
+      <summary><b>2</b><span class="step-title">Size and finish</span><span class="step-now" id="nowSize"></span></summary>
+      <div class="step-body">
+        <div class="label">Size</div>
+        <div class="seg" id="size">
+          <button type="button" data-v="S">Small<small>80 mm tall</small></button>
+          <button type="button" data-v="M">Medium<small>120 mm tall</small></button>
+          <button type="button" data-v="L">Large<small>160 mm tall</small></button>
+        </div>
+        <div class="label">Finish</div>
+        <div class="seg" id="finish">
+          <button type="button" data-v="matte">Matte<small>smooth and soft</small></button>
+          <button type="button" data-v="fuzzy">Fuzzy<small>textured, felt-like</small></button>
+        </div>
+        <button class="btn next" type="button" data-next="stepColour">Next: colours</button>
       </div>
-      <p class="hint" id="finishHint" style="margin:8px 0 0"></p>
-    </div>
+    </details>
 
-    <div class="card">
-      <h2><b>3</b>Colours <span class="picked" id="colourName"></span></h2>
-      <div class="chips" id="letterPick"></div>
-      <div class="swatches" id="colours" style="margin-top:12px"></div>
-      <p class="hint" style="margin:10px 0 0">Pick all letters or one letter, then tap a colour.</p>
-    </div>
+    <details class="card dstep" name="steps" id="stepColour">
+      <summary><b>3</b><span class="step-title">Colours</span><span class="step-now" id="colourName"></span></summary>
+      <div class="step-body">
+        <div class="chips" id="letterPick"></div>
+        <p class="hint" style="margin:8px 0 10px">Colour every letter the same, or tap one letter to change just that one.</p>
+        <div class="swatches" id="colours"></div>
+        <button class="btn next" type="button" data-next="stepOrder">Next: check your order</button>
+      </div>
+    </details>
 
-    <div class="card order">
-      <h2><b>4</b>Your order <span class="picked" id="orderCount"></span></h2>
-      <p class="hint" style="margin:0 0 10px">Ordering more than one name? Add each here: they all go in the same design code.</p>
-      <div class="order-list" id="orderList"></div>
-      <button class="btn add-big" id="addName2" type="button"><span>+</span> Add another name</button>
-    </div>
-    <p class="hint credit">Flat backs, made to suit Command strips. Letter shapes are inflated from the fonts Sniglet and Titan One (SIL Open Font License).</p>
+    <details class="card dstep order" name="steps" id="stepOrder">
+      <summary><b>4</b><span class="step-title">Your order</span><span class="step-now" id="orderCount"></span></summary>
+      <div class="step-body">
+        <p class="hint" style="margin:0 0 10px">Ordering more than one name? Add each here: they all go in the same design code.</p>
+        <div class="order-list" id="orderList"></div>
+        <button class="btn add-big" id="addName2" type="button"><span>+</span> Add another name</button>
+      </div>
+    </details>
+    <p class="hint credit" id="credit">Flat backs, made to suit Command strips.</p>
   </section>
 </main>
 
-<footer class="bar">
-  <button class="btn" id="addName" type="button" title="Design another name for the same order">+ Add name</button>
+<footer class="bar with-sum">
+  <div class="bar-sum" id="barSum"></div>
   <button class="btn primary" id="getCode" type="button">Get my design code</button>
 </footer>
 
@@ -108,6 +118,7 @@
 
 <script src="code.js"></script>
 <script src="letterview.js"></script>
+<script src="picker.js"></script>
 <script src="designer.js"></script>
 <script src="../rt3d.js"></script>
 </body>

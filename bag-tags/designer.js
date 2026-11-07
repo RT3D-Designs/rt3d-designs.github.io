@@ -19,7 +19,7 @@ const MAX_TAGS = 10, MAX_CHARS = 30;
 const LOOP_READY = true;             // the built-in TPU loop, opened 2026-11-05 at the user's call (same switch as Tag Studio's)
 const HINTS = { key: "5 mm hole with a thick rim, for a split keyring.", clip: "8 mm hole, for a carabiner or clip.", tie: "4 mm hole, for a cable tie.", slot: "A long slot a strap or luggage loop threads through.", loop: "A flexible TPU strap that loops round the handle." };
 
-let data = null, view = null;
+let data = null, view = null, steps = null, colourFor = "c";   // colourFor: which part the colours apply to, c backing or k letters
 const state = { tags: [], cur: 0 };
 const cur = () => state.tags[state.cur];
 const colourOf = name => data.colours.find(c => c[0] === name) || data.colours[0];
@@ -43,13 +43,18 @@ function render() {
     el("i", { style: `background:${colourOf(x.c)[1]}` }), label(x, i),
     state.tags.length > 1 ? el("span", { class: "x", role: "button", tabindex: "0", "aria-label": "Remove this tag", onclick: e => { e.stopPropagation(); remove(i); } }, "×") : null)),
     state.tags.length < MAX_TAGS ? el("button", { type: "button", class: "tab add", onclick: addTag }, "+ Add tag") : null);
-  $("#orderCount").textContent = `${state.tags.length} tag${state.tags.length > 1 ? "s" : ""}`;
-  $("#orderList").replaceChildren(...state.tags.map((x, i) => el("button", { type: "button", class: "order-row" + (i === state.cur ? " on" : ""), onclick: () => { state.cur = i; changed(); scrollTo({ top: 0, behavior: "smooth" }); } },
+  const count = `${state.tags.length} tag${state.tags.length > 1 ? "s" : ""}`;
+  $("#orderCount").textContent = count;
+  $("#orderList").replaceChildren(...state.tags.map((x, i) => el("button", { type: "button", class: "order-row" + (i === state.cur ? " on" : ""), onclick: () => { state.cur = i; changed(); steps.open("stepText"); } },
     el("i", { style: `background:${colourOf(x.c)[1]}` }),
     el("span", {}, el("b", {}, `${i + 1}. ${label(x, i)}`), el("small", {}, describe(x))),
     el("span", { class: "edit" }, i === state.cur ? "Editing" : "Edit"))));
-  $("#addTag2").hidden = $("#addTag").hidden = state.tags.length >= MAX_TAGS;
-  $("#shapes").replaceChildren(...Object.entries(Tags.LABELS.shapes).map(([k, v]) => el("button", { type: "button", class: "chip" + (t.s === k ? " on" : ""), onclick: () => { t.s = k; changed(); } }, v)));
+  $("#addTag2").hidden = state.tags.length >= MAX_TAGS;
+  $("#shapes").replaceChildren(...Object.entries(Tags.LABELS.shapes).map(([k, v]) => {
+    const b = el("button", { type: "button", class: t.s === k ? "on" : "", onclick: () => { t.s = k; changed(); } }, v);
+    b.insertAdjacentHTML("afterbegin", SHAPE_ICONS[k] || "");
+    return b;
+  }));
   // long tags go by their length, round shapes by their width
   const long = ["name", "luggage", "rect"].includes(t.s);
   document.querySelectorAll("#size button").forEach(x => { x.classList.toggle("on", x.dataset.v === t.z); x.querySelector("small").textContent = `about ${Tags.SIZES[x.dataset.v][long ? "len" : "d"]} mm`; });
@@ -59,38 +64,51 @@ function render() {
   }));
   $("#attachHint").textContent = HINTS[t.a];
   $("#lines").replaceChildren(...t.l.slice(0, lineCount(t)).map((l, i) => lineCard(l, i)));
+  // one set of colours, for whichever part is chosen
   $("#c1Name").textContent = t.c; $("#c2Name").textContent = t.k;
-  swatches($("#c1"), t.c, v => { t.c = v; changed(); });
-  swatches($("#c2"), t.k, v => { t.k = v; changed(); });
+  $("#c1Dot").style.background = colourOf(t.c)[1]; $("#c2Dot").style.background = colourOf(t.k)[1];
+  document.querySelectorAll("#colourFor button").forEach(x => x.classList.toggle("on", x.dataset.v === colourFor));
+  $("#colours").replaceChildren(...data.colours.map(([n, hex, tr]) => el("button", { type: "button", class: (tr ? "trans " : "") + (n === t[colourFor] ? "on" : ""), title: n, "aria-label": n, style: `background-color:${hex}`, onclick: () => { t[colourFor] = n; changed(); } })));
+  $("#nowShape").textContent = `${Tags.LABELS.shapes[t.s]}, ${{ S: "small", M: "medium", L: "large" }[t.z]}`;
+  $("#nowAttach").textContent = Tags.LABELS.attach[t.a];
+  $("#nowColour").textContent = `${t.c}, ${t.k}`;
+  refreshLabels();
 }
-function swatches(box, current, onPick) {
-  box.replaceChildren(...data.colours.map(([n, hex, tr]) => el("button", { type: "button", class: (tr ? "trans " : "") + (n === current ? "on" : ""), title: n, "aria-label": n, style: `background-color:${hex}`, onclick: () => onPick(n) })));
-}
-
-const emoteIcons = new Map();
-const emoteIcon = e => { if (!emoteIcons.has(e)) emoteIcons.set(e, Emotes.icon(e, 44, "#eceae6")); return emoteIcons.get(e); };
+// little pictures of the shapes (40 x 28)
+const SHAPE_ICONS = (() => {
+  const svg = d => `<svg viewBox="0 0 40 28" aria-hidden="true"><path d="${d}"/></svg>`, hole = (x, y, r) => `M${x - r} ${y}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0z`;
+  return {
+    name: svg("M7 9c1-3 4-3 6-2 2-3 6-3 8-1 3-2 7-2 9 0 3 0 6 2 6 6s-1 9-5 9c-2 2-6 2-8 0-3 2-7 2-9 0-3 2-7 1-8-2-3-1-4-8 1-10z" + hole(9, 14, 2)),
+    luggage: svg("M11 5h24a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H11l-8-6.5a3 3 0 0 1 0-5z" + hole(9, 14, 2)),
+    rect: svg("M6 5h28a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4z" + hole(8, 14, 2)),
+    round: svg("M20 1a13 13 0 1 1 0 26a13 13 0 1 1 0-26z" + hole(20, 6, 2)),
+    shield: svg("M20 1l11 3v9c0 7-5 12-11 14C14 25 9 20 9 13V4z" + hole(20, 6, 2)),
+    heart: svg("M20 26C12 20 6 16 6 9.500A6.800 6.800 0 0 1 20 6.500A6.800 6.800 0 0 1 34 9.500C34 16 28 20 20 26z" + hole(20, 10, 2)),
+  };
+})();
+const onPhone = () => matchMedia("(pointer: coarse)").matches;
 
 function lineCard(l, i) {
-  const input = el("input", { type: "text", value: l.x, maxlength: MAX_CHARS, placeholder: i ? "Second line (optional), e.g. a phone number or ♥" : "Type a name", autocomplete: "off", autocapitalize: "characters",
-    oninput: e => { l.x = e.target.value; changed(true); samples(); } });
-  // the font buttons show the buyer's own text
-  const samples = () => card.querySelectorAll(".fonts span").forEach(s => s.textContent = (l.x.trim() || "Name").slice(0, 10));
+  const input = el("input", { type: "text", value: l.x, maxlength: MAX_CHARS, placeholder: i ? "Second line, e.g. a phone number" : "Type a name", autocomplete: "off", autocapitalize: "characters", "aria-label": i ? "Second line" : "Main line",
+    oninput: e => { l.x = e.target.value; changed(true); fonts.refresh(); } });
+  // an icon goes where the cursor was, or at the end if they haven't been in the box
+  let caret = null;
+  for (const ev of ["keyup", "click", "input"]) input.addEventListener(ev, () => { caret = input.selectionStart; });
   const insert = ch => {
-    const p = input.selectionStart ?? input.value.length;
+    const p = caret ?? input.value.length;
     if ((input.value + ch).length > MAX_CHARS + 4) return;
-    l.x = input.value.slice(0, p) + ch + input.value.slice(input.selectionEnd ?? p); input.value = l.x;
-    changed(true); samples(); input.focus(); input.setSelectionRange(p + ch.length, p + ch.length);
+    l.x = input.value.slice(0, p) + ch + input.value.slice(p); input.value = l.x; caret = p + ch.length;
+    changed(true); fonts.refresh();
+    if (!onPhone()) { input.focus(); input.setSelectionRange(p + ch.length, p + ch.length); }
+    toast("Icon added");
   };
-  const sample = (l.x.trim() || "Name").slice(0, 10);
-  const card = el("div", { class: "line" },
-    el("div", { class: "line-head" }, i ? "Second line" : "Main line"),
+  // the dropdown shows the buyer's own text in each font
+  const fonts = Picker.fonts({ groups: Picker.groupsOf(F), value: l.f, sample: () => (l.x.trim() || "Name").slice(0, 14), onPick: k => { l.f = k; changed(); } });
+  const icons = Picker.icons({ onPick: e => insert(e.ch) });
+  return el("div", { class: "line" },
+    i ? el("div", { class: "line-head" }, "Second line") : null,
     input,
-    el("div", { class: "label" }, "Add an emote"),
-    el("div", { class: "emotes" }, ...Emotes.list.map(e => el("button", { type: "button", title: e.name, "aria-label": "Add " + e.name, onclick: () => insert(e.ch) }, el("img", { src: emoteIcon(e), alt: "" })))),
-    el("div", { class: "label" }, "Font"),
-    el("div", { class: "fonts" }, ...Object.entries(F).map(([k, f]) => el("button", { type: "button", class: k === l.f ? "on" : "", onclick: () => { l.f = k; changed(); } },
-      el("span", { style: `font-family:"${f.web}";font-weight:${f.weight}` }, sample), el("small", {}, f.label)))));
-  return card;
+    el("div", { class: "pick-pair" }, fonts.root, icons.root));
 }
 
 // ---- preview ----
@@ -100,11 +118,14 @@ function changed(quiet) {
   if (!quiet) render(); else refreshLabels();
   clearTimeout(timer); timer = setTimeout(draw, quiet ? 120 : 0);
 }
-// typing only updates the names in the tabs and the order list, so the text box keeps the keyboard
+// typing only updates the names and summaries, so the text box keeps the keyboard
 function refreshLabels() {
-  const i = state.cur, name = label(cur(), i), tab = $("#tabs").children[i], row = $("#orderList").children[i];
+  const i = state.cur, t = cur(), name = label(t, i), tab = $("#tabs").children[i], row = $("#orderList").children[i];
   if (tab) { const n = [...tab.childNodes].find(c => c.nodeType === 3); if (n) n.textContent = name; }
   if (row) row.querySelector("b").textContent = `${i + 1}. ${name}`;
+  const typed = t.l.slice(0, lineCount(t)).some(l => l.x.trim());
+  $("#nowText").textContent = typed ? name : "";
+  $("#barSum").replaceChildren(el("b", {}, typed ? name : "Your tag"), `${state.tags.length} tag${state.tags.length > 1 ? "s" : ""} in this order`);
 }
 let drawing = false, drawAgain = false;
 async function draw() {
@@ -129,7 +150,7 @@ function addTag() {
   if (state.tags.length >= MAX_TAGS) return;
   const t = newTag(cur()); t.l.forEach(l => l.x = "");
   state.tags.push(t); state.cur = state.tags.length - 1; changed();
-  scrollTo({ top: 0, behavior: "smooth" });
+  steps.open("stepText");
   toast(`Tag ${state.tags.length} added: design it now`);
   setTimeout(() => { const inp = document.querySelector(".line input"); if (inp) inp.focus({ preventScroll: true }); }, 400);
 }
@@ -141,7 +162,7 @@ const summary = () => state.tags.map((t, i) => `${state.tags.length > 1 ? i + 1 
 function askName() {
   const empty = state.tags.findIndex(t => !t.l.slice(0, lineCount(t)).some(l => l.x.trim()));
   if (empty >= 0) {
-    state.cur = empty; changed(); scrollTo({ top: 0, behavior: "smooth" });
+    state.cur = empty; changed(); steps.open("stepText");
     toast(`Tag ${empty + 1} needs a name`);
     setTimeout(() => { const inp = document.querySelector(".line input"); if (inp) inp.focus({ preventScroll: true }); }, 400);
     return;
@@ -185,6 +206,9 @@ function save() { try { localStorage.setItem("rt3d-tag-designer", JSON.stringify
 
 async function init() {
   data = await (await fetch("data.json", { cache: "no-cache" })).json();
+  await Picker.loadFonts(Object.values(F));
+  steps = Picker.steps();
+  document.querySelectorAll("#colourFor button").forEach(x => x.onclick = () => { colourFor = x.dataset.v; render(); });
   view = View3D.create($("#view"), { yaw: 0.25, pitch: 0.95 });
   if (!view) { $("#warn").hidden = false; $("#warn").textContent = "Your browser can't show 3D, but you can still make your code."; }
   // a code in the link (#RTT1-…) wins; otherwise carry on from last time
@@ -196,7 +220,6 @@ async function init() {
     state.cur = Math.min(state.cur, state.tags.length - 1);
   }
   document.querySelectorAll("#size button").forEach(x => x.onclick = () => { cur().z = x.dataset.v; changed(); });
-  $("#addTag").onclick = addTag;
   $("#addTag2").onclick = addTag;
   $("#getCode").onclick = askName;
   $("#nameOk").onclick = nameDone;

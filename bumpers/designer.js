@@ -83,8 +83,6 @@ function render() {
   $("#addBumper").hidden = state.bumpers.length >= MAX_BUMPERS;
 }
 
-const emoteIcons = new Map();
-const emoteIcon = e => { if (!emoteIcons.has(e)) emoteIcons.set(e, Emotes.icon(e, 44, "#eceae6")); return emoteIcons.get(e); };
 const around = a => Math.abs(a) < 8 ? "Front" : Math.abs(a) > 172 ? "Back" : (a > 0 ? "Right " : "Left ") + Math.abs(Math.round(a)) + "°";
 
 function rangeRow(min, max, step, value, fmt, onInput) {
@@ -94,24 +92,24 @@ function rangeRow(min, max, step, value, fmt, onInput) {
 
 function lineCard(b, l, i) {
   const input = el("input", { type: "text", value: l.x, maxlength: MAX_CHARS, placeholder: i ? "e.g. a second name or ♥" : "Type a name", autocomplete: "off", autocapitalize: "characters",
-    oninput: e => { l.x = e.target.value; changed(true); samples(); } });
-  // the font buttons show the buyer's own text
-  const samples = () => card.querySelectorAll(".fonts span").forEach(s => s.textContent = (l.x.trim() || "Name").slice(0, 10));
+    oninput: e => { l.x = e.target.value; changed(true); fonts.refresh(); } });
+  // an icon goes where the cursor was, or at the end if they haven't been in the box
+  let caret = null;
+  for (const ev of ["keyup", "click", "input"]) input.addEventListener(ev, () => { caret = input.selectionStart; });
   const insert = ch => {
-    const p = input.selectionStart ?? input.value.length;
+    const p = caret ?? input.value.length;
     if ((input.value + ch).length > MAX_CHARS + 4) return;
-    l.x = input.value.slice(0, p) + ch + input.value.slice(input.selectionEnd ?? p); input.value = l.x;
-    changed(true); samples(); input.focus(); input.setSelectionRange(p + ch.length, p + ch.length);
+    l.x = input.value.slice(0, p) + ch + input.value.slice(p); input.value = l.x; caret = p + ch.length;
+    changed(true); fonts.refresh();
+    if (!matchMedia("(pointer: coarse)").matches) { input.focus(); input.setSelectionRange(p + ch.length, p + ch.length); }
   };
-  const sample = (l.x.trim() || "Name").slice(0, 10);
+  // the dropdown shows the buyer's own text in each font
+  const fonts = Picker.fonts({ groups: Picker.groupsOf(F), value: l.f, sample: () => (l.x.trim() || "Name").slice(0, 14), onPick: k => { l.f = k; changed(); } });
+  const icons = Picker.icons({ onPick: e => insert(e.ch) });
   const card = el("div", { class: "line" },
     el("div", { class: "line-head" }, i ? "Second line" : "Main line", i ? el("button", { type: "button", class: "x", onclick: () => { b.t.splice(i, 1); changed(); } }, "Remove") : null),
     input,
-    el("div", { class: "label" }, "Add an emote"),
-    el("div", { class: "emotes" }, ...Emotes.list.map(e => el("button", { type: "button", title: e.name, "aria-label": "Add " + e.name, onclick: () => insert(e.ch) }, el("img", { src: emoteIcon(e), alt: "" })))),
-    el("div", { class: "label" }, "Font"),
-    el("div", { class: "fonts" }, ...Object.entries(F).map(([k, f]) => el("button", { type: "button", class: k === l.f ? "on" : "", onclick: () => { l.f = k; changed(); } },
-      el("span", { style: `font-family:"${f.web}";font-weight:${f.weight}` }, sample), el("small", {}, f.label)))),
+    el("div", { class: "pick-pair" }, fonts.root, icons.root),
     el("div", { class: "label" }, "Letter size"),
     rangeRow(10, 22, 0.5, l.z, v => v + " mm", v => { l.z = v; changed(true); }),
     el("div", { class: "label" }, "How many times round"),
@@ -208,6 +206,7 @@ function save() { try { localStorage.setItem("bbz-designer", JSON.stringify(stat
 
 async function init() {
   data = await (await fetch("data.json", { cache: "no-cache" })).json();
+  await Picker.loadFonts(Object.values(F));
   view = View3D.create($("#view"));
   if (!view) { $("#warn").hidden = false; $("#warn").textContent = "Your browser can't show 3D, but you can still make your code."; }
   // a code in the link (#BBZ1-…) wins; otherwise carry on from last time

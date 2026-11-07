@@ -120,8 +120,8 @@ if (!reduced && matchMedia("(hover: hover)").matches) document.querySelectorAll(
   const canvas = document.getElementById("heroLetters"), tag = document.getElementById("heroTag"), view = LetterView.create(canvas); if (!view) return;
   const hex = h => [1, 3, 5].map(i => parseInt(h.substr(i, 2), 16) / 255);
   const SETS = [["#1c68c4", "#9aa6b5", "#e6e9ee", "#3f93e8", "#5d6b7d"], ["#f7c9d4", "#f8e8a6", "#bcdcee", "#c6ead8", "#dccdf0"], ["#a2cdea", "#6f93dc", "#d5ecf5", "#1f5fd1", "#8aa5c0"], ["#f9d2b8", "#a9bb9c", "#e6dcc8", "#c46a4b", "#cde2ad"], ["#c0b0e6", "#e8a6b6", "#7fd3d6", "#f4f1ea", "#f6b98c"]];
-  const STYLE = { sniglet: "Round and bubbly", titan: "Bold and blocky" }, FINISH = { matte: "Matte", fuzzy: "Fuzzy" };
-  const SHOW = [["YOURS", "sniglet", "matte"], ["ISLA", "sniglet", "fuzzy"], ["NOAH", "titan", "matte"], ["RUBY", "sniglet", "matte"], ["OLIVER", "titan", "fuzzy"], ["MIA", "sniglet", "fuzzy"], ["THEO", "titan", "matte"], ["POPPY", "sniglet", "matte"], ["LEO", "titan", "fuzzy"], ["HAZEL", "sniglet", "fuzzy"], ["FINN", "titan", "matte"], ["WILLOW", "sniglet", "matte"]];
+  const STYLE = { sniglet: "Round and bubbly", titan: "Bold and blocky", coiny: "Soft and round", poppins: "Clean and modern", alfa: "Classic slab", rammetto: "Extra heavy" }, FINISH = { matte: "Matte", fuzzy: "Fuzzy" };
+  const SHOW = [["YOURS", "sniglet", "matte"], ["ISLA", "coiny", "fuzzy"], ["NOAH", "titan", "matte"], ["RUBY", "poppins", "matte"], ["OLIVER", "alfa", "fuzzy"], ["MIA", "rammetto", "fuzzy"], ["THEO", "sniglet", "matte"], ["POPPY", "coiny", "matte"], ["LEO", "titan", "fuzzy"], ["HAZEL", "poppins", "fuzzy"], ["FINN", "rammetto", "matte"], ["WILLOW", "alfa", "matte"]];
   const cache = new Map();
   const mesh = (f, ch) => { const k = f + ch; if (!cache.has(k)) cache.set(k, LetterView.loadPreview(`letters/letters/${f}/preview/${ch}.bin`)); return cache.get(k); };
   const load = ([word, f]) => Promise.all([...word].map(ch => mesh(f, ch)));

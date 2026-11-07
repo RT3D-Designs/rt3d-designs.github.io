@@ -13,12 +13,51 @@ const DesignCode = (() => {
   // Fonts buyers can pick: a free web font that looks like it in the designer (from Google Fonts, free to use on a
   // website), and the real font Bumper Studio prints with. The key is what goes in the code.
   const FONTS = {
-    block:   { label: "Bold block",   web: "Archivo Black", weight: 400, app: "Arial Black" },
-    owala:   { label: "Owala style",  web: "Outfit",        weight: 700, app: "Gilroy-Bold" },
-    stanley: { label: "Stanley style", web: "Oswald",       weight: 600, app: "Trade Gothic LT Std Cn" },
-    rounded: { label: "Rounded",      web: "Nunito",        weight: 900, app: "Arial Rounded MT Bold" },
-    script:  { label: "Script",       web: "Great Vibes",   weight: 400, app: "CommercialScript BT" },
+    // Bold and strong
+    block: { label: "Bold block", web: "Archivo Black", weight: 400, app: "Arial Black", group: "Bold and strong" },
+    owala: { label: "Owala style", web: "Outfit", weight: 700, app: "Gilroy-Bold", group: "Bold and strong" },
+    stanley: { label: "Stanley style", web: "Oswald", weight: 600, app: "Trade Gothic LT Std Cn", group: "Bold and strong" },
+    poppins: { label: "Modern bold", web: "Poppins", weight: 800, app: "Poppins ExtraBold", group: "Bold and strong", file: "Poppins-ExtraBold.ttf" },
+    anton: { label: "Tall poster", web: "Anton", weight: 400, app: "Anton", group: "Bold and strong", file: "Anton-Regular.ttf" },
+    bebas: { label: "Tall and clean", web: "Bebas Neue", weight: 400, app: "Bebas Neue", group: "Bold and strong", file: "BebasNeue-Regular.ttf" },
+    russo: { label: "Sporty", web: "Russo One", weight: 400, app: "Russo One", group: "Bold and strong", file: "RussoOne-Regular.ttf" },
+    bungee: { label: "Sign writer", web: "Bungee", weight: 400, app: "Bungee", group: "Bold and strong", file: "Bungee-Regular.ttf" },
+    alfa: { label: "Heavy slab", web: "Alfa Slab One", weight: 400, app: "Alfa Slab One", group: "Bold and strong", file: "AlfaSlabOne-Regular.ttf" },
+    graduate: { label: "Varsity", web: "Graduate", weight: 400, app: "Graduate", group: "Bold and strong", file: "Graduate-Regular.ttf" },
+    blackops: { label: "Army stencil", web: "Black Ops One", weight: 400, app: "Black Ops One", group: "Bold and strong", file: "BlackOpsOne-Regular.ttf" },
+    // Round and fun
+    rounded: { label: "Rounded", web: "Nunito", weight: 900, app: "Arial Rounded MT Bold", group: "Round and fun" },
+    lilita: { label: "Friendly", web: "Lilita One", weight: 400, app: "Lilita One", group: "Round and fun", file: "LilitaOne-Regular.ttf" },
+    paytone: { label: "Soft bold", web: "Paytone One", weight: 400, app: "Paytone One", group: "Round and fun", file: "PaytoneOne-Regular.ttf" },
+    coiny: { label: "Bubbly", web: "Coiny", weight: 400, app: "Coiny", group: "Round and fun", file: "Coiny-Regular.ttf" },
+    bubblegum: { label: "Bubblegum", web: "Bubblegum Sans", weight: 400, app: "Bubblegum Sans", group: "Round and fun", file: "BubblegumSans-Regular.ttf" },
+    chewy: { label: "Chewy", web: "Chewy", weight: 400, app: "Chewy", group: "Round and fun", file: "Chewy-Regular.ttf" },
+    luckiest: { label: "Cartoon", web: "Luckiest Guy", weight: 400, app: "Luckiest Guy", group: "Round and fun", file: "LuckiestGuy-Regular.ttf" },
+    bangers: { label: "Comic book", web: "Bangers", weight: 400, app: "Bangers", group: "Round and fun", file: "Bangers-Regular.ttf" },
+    // Script and handwritten
+    script: { label: "Script", web: "Great Vibes", weight: 400, app: "CommercialScript BT", group: "Script and handwritten" },
+    pacifico: { label: "Surf script", web: "Pacifico", weight: 400, app: "Pacifico", group: "Script and handwritten", file: "Pacifico-Regular.ttf" },
+    lobster: { label: "Retro script", web: "Lobster", weight: 400, app: "Lobster", group: "Script and handwritten", file: "Lobster-Regular.ttf" },
+    kaushan: { label: "Brush script", web: "Kaushan Script", weight: 400, app: "Kaushan Script", group: "Script and handwritten", file: "KaushanScript-Regular.ttf" },
+    satisfy: { label: "Neat script", web: "Satisfy", weight: 400, app: "Satisfy", group: "Script and handwritten", file: "Satisfy-Regular.ttf" },
+    yellowtail: { label: "Sign script", web: "Yellowtail", weight: 400, app: "Yellowtail", group: "Script and handwritten", file: "Yellowtail-Regular.ttf" },
+    courgette: { label: "Soft script", web: "Courgette", weight: 400, app: "Courgette", group: "Script and handwritten", file: "Courgette-Regular.ttf" },
+    marker: { label: "Marker pen", web: "Permanent Marker", weight: 400, app: "Permanent Marker", group: "Script and handwritten", file: "PermanentMarker-Regular.ttf" },
+    // Classic and special
+    ultra: { label: "Classic heavy", web: "Ultra", weight: 400, app: "Ultra", group: "Classic and special", file: "Ultra-Regular.ttf" },
+    caprasimo: { label: "Soft retro", web: "Caprasimo", weight: 400, app: "Caprasimo", group: "Classic and special", file: "Caprasimo-Regular.ttf" },
+    righteous: { label: "Seventies", web: "Righteous", weight: 400, app: "Righteous", group: "Classic and special", file: "Righteous-Regular.ttf" },
+    rye: { label: "Western", web: "Rye", weight: 400, app: "Rye", group: "Classic and special", file: "Rye-Regular.ttf" },
+    pirata: { label: "Old English", web: "Pirata One", weight: 400, app: "Pirata One", group: "Classic and special", file: "PirataOne-Regular.ttf" },
+    creepster: { label: "Spooky", web: "Creepster", weight: 400, app: "Creepster", group: "Classic and special", file: "Creepster-Regular.ttf" },
+    pixel: { label: "Pixel game", web: "Press Start 2P", weight: 400, app: "Press Start 2P", group: "Classic and special", file: "PressStart2P-Regular.ttf" },
+    audiowide: { label: "Space age", web: "Audiowide", weight: 400, app: "Audiowide", group: "Classic and special", file: "Audiowide-Regular.ttf" },
   };
+  // The fonts Bumper Studiowebonts holds (free Google fonts, kept on this PC, never published): the apps load them from there, so nothing needs installing.
+  const fontFile = family => { const f = Object.values(FONTS).find(x => x.file && x.app === family); return f ? "fonts/" + f.file : null; };
+  const bundledFonts = () => Object.values(FONTS).filter(f => f.file).map(f => f.app);
+  // Google's stylesheet for a list of { web, weight } fonts (the designers load this; the browser only fetches a font once it's shown).
+  const fontCss = list => "https://fonts.googleapis.com/css2?" + list.map(f => "family=" + f.web.replace(/ /g, "+") + (f.weight !== 400 ? ":wght@" + f.weight : "")).join("&") + "&display=swap";
   // each brand's usual look (matches the app's per-brand fonts)
   const BRAND_FONT = { Owala: "owala", Stanley: "stanley", Yeti: "block" };
 
@@ -91,7 +130,10 @@ const DesignCode = (() => {
 
   // Wall letter codes (Letter Studio, 2026-11-06): RTL1- + the same packing.
   // { n: order name, w: [ { x: the letters (A–Z), f: font key, z: size S | M | L, e: finish matte | fuzzy, c: [ a colour per letter, or just one ] } ] }
-  const LETTER_PREFIX = "RTL1-", LETTER_FONTS = { sniglet: "Round and bubbly", titan: "Bold and blocky" }, LETTER_FINISHES = { matte: "Matte", fuzzy: "Fuzzy" };
+  const LETTER_PREFIX = "RTL1-", LETTER_FONTS = { sniglet: "Round and bubbly", titan: "Bold and blocky", coiny: "Soft and round", poppins: "Clean and modern", alfa: "Classic slab", rammetto: "Extra heavy" }, LETTER_FINISHES = { matte: "Matte", fuzzy: "Fuzzy" };
+  // the font each letter style was inflated from, for showing it in the designers' menu and the apps
+  const LETTER_WEB = { sniglet: { web: "Sniglet", weight: 800 }, titan: { web: "Titan One", weight: 400 }, coiny: { web: "Coiny", weight: 400 }, 
+    poppins: { web: "Poppins", weight: 800 }, alfa: { web: "Alfa Slab One", weight: 400 }, rammetto: { web: "Rammetto One", weight: 400 } };
   const cleanWord = s => String(s || "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 16);
   async function encodeLetters(design) {
     const slim = {};
@@ -110,5 +152,5 @@ const DesignCode = (() => {
       return { x, f: LETTER_FONTS[w.f] ? w.f : "sniglet", z: ["S", "M", "L"].includes(w.z) ? w.z : "M", e: w.e === "fuzzy" ? "fuzzy" : "matte", c: [...x].map((_, i) => cs.length > 1 ? (cs[i] || cs[0]) : (cs[0] || "")) }; }) };
   }
 
-  return { PREFIX, FONTS, BRAND_FONT, encode, decode, TAG_PREFIX, TAG_SHAPES, TAG_ATTACH, encodeTags, decodeTags, LETTER_PREFIX, LETTER_FONTS, LETTER_FINISHES, cleanWord, encodeLetters, decodeLetters };
+  return { PREFIX, FONTS, fontFile, bundledFonts, fontCss, BRAND_FONT, encode, decode, TAG_PREFIX, TAG_SHAPES, TAG_ATTACH, encodeTags, decodeTags, LETTER_PREFIX, LETTER_FONTS, LETTER_WEB, LETTER_FINISHES, cleanWord, encodeLetters, decodeLetters };
 })();
