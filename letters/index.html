@@ -96,12 +96,14 @@
 
 <dialog id="codeDlg">
   <h3>Your design code</h3>
-  <p class="hint">Copy this code and paste it into the <b>personalisation</b> box when you order on eBay (or send it to us in a message). We'll print exactly this design.</p>
+  <p class="hint">Copy this code and paste it in the <b>Note to Seller</b> at checkout when you order on eBay. We'll print exactly this design.</p>
   <div class="code" id="codeText"></div>
   <div class="row-btns">
+    <a class="btn primary" id="buyEbay" target="_blank" rel="noopener" hidden>Order on eBay</a>
     <button class="btn primary" id="copyCode" type="button">Copy code</button>
     <button class="btn" id="copyLink" type="button">Copy link to this design</button>
   </div>
+  <p class="ebay-note" id="ebayNote" role="status" hidden>Code copied, paste it in the <b>Note to Seller</b> at checkout</p>
   <p class="hint small" id="codeSummary"></p>
   <div class="dlg-end"><button class="btn ghost" id="closeCode" type="button">Back to my design</button></div>
 </dialog>
@@ -119,6 +121,7 @@
 <script src="code.js"></script>
 <script src="letterview.js"></script>
 <script src="picker.js"></script>
+<script src="../ebay.js"></script>
 <script src="designer.js"></script>
 <script src="../rt3d.js"></script>
 </body>

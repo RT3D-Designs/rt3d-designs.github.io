@@ -177,6 +177,7 @@ function nameDone() {
   state.orderName = v; save(); $("#nameDlg").close(); showCode();
 }
 async function showCode() {
+  $("#ebayNote").hidden = true;
   const code = await DesignCode.encodeTags(designNow());
   $("#codeText").textContent = code;
   $("#codeSummary").textContent = `Order for ${state.orderName}: ${summary()}`;
@@ -184,8 +185,15 @@ async function showCode() {
   $("#codeDlg").showModal();
 }
 async function copy(text, msg) {
-  try { await navigator.clipboard.writeText(text); toast(msg); }
-  catch { const r = document.createRange(); r.selectNodeContents($("#codeText")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("Selected: press copy on your keyboard"); }
+  try { await navigator.clipboard.writeText(text); toast(msg); return true; }
+  catch { const r = document.createRange(); r.selectNodeContents($("#codeText")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("Selected: press copy on your keyboard"); return false; }
+}
+// after "Order on eBay": say whether the code made it to the clipboard (if not, it's left highlighted to copy by hand)
+async function ebayCopy() {
+  const ok = await copy($("#codeText").textContent, "Code copied, paste it in the Note to Seller at checkout");
+  const n = $("#ebayNote");
+  n.replaceChildren(ok ? "Code copied, paste it in the " : "Copy the highlighted code, then paste it in the ", el("b", {}, "Note to Seller"), " at checkout");
+  n.hidden = false;
 }
 async function openCode(text) {
   const d = await DesignCode.decodeTags(text);
@@ -226,6 +234,10 @@ async function init() {
   $("#nameBack").onclick = () => $("#nameDlg").close();
   $("#orderName").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); nameDone(); } });
   $("#copyCode").onclick = () => copy($("#codeText").textContent, "Code copied");
+  // "Order on eBay" (link set in the site's ebay.js; hidden while it's empty): copies the code and opens the listing
+  const ebay = window.RT3D_EBAY && window.RT3D_EBAY.bagTags;
+  if (ebay) { const buy = $("#buyEbay"); buy.href = ebay; buy.hidden = false; $("#copyCode").classList.remove("primary");
+    buy.onclick = ebayCopy; }
   $("#copyLink").onclick = () => copy(location.href.split("#")[0] + "#" + $("#codeText").textContent, "Link copied");
   $("#closeCode").onclick = () => $("#codeDlg").close();
   $("#openCode").onclick = () => { $("#loadText").value = ""; $("#loadErr").textContent = ""; $("#loadDlg").showModal(); $("#loadText").focus(); };

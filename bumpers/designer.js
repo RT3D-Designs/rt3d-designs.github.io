@@ -183,12 +183,33 @@ async function showCode() {
   const code = await DesignCode.encode(designNow());
   $("#codeText").textContent = code;
   $("#codeSummary").textContent = `Order for ${state.orderName}: ${summary()}`;
+  ebayButtons();
   history.replaceState(null, "", "#" + code);
   $("#codeDlg").showModal();
 }
+// "Order on eBay": each bottle brand has its own listing (set in the site's ebay.js). One button per brand in the order;
+// a brand with no link gets no button. Clicking copies the code and opens the listing in a new tab (a plain link, so
+// popup blockers leave it alone).
+function ebayButtons() {
+  const links = (window.RT3D_EBAY && window.RT3D_EBAY.bumpers) || {};
+  const brands = [...new Set(state.bumpers.map(b => baseOf(b.p).brand))].filter(br => links[br]);
+  $("#buyEbay").replaceChildren(...brands.map(br => el("a", { class: "btn primary", href: links[br], target: "_blank", rel: "noopener",
+    onclick: ebayCopy },
+    brands.length > 1 ? `Order ${br} on eBay` : "Order on eBay")));
+  $("#copyCode").classList.toggle("primary", !brands.length);
+  $("#ebayMulti").hidden = brands.length < 2;
+  $("#ebayNote").hidden = true;
+}
 async function copy(text, msg) {
-  try { await navigator.clipboard.writeText(text); toast(msg); }
-  catch { const r = document.createRange(); r.selectNodeContents($("#codeText")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("Selected: press copy on your keyboard"); }
+  try { await navigator.clipboard.writeText(text); toast(msg); return true; }
+  catch { const r = document.createRange(); r.selectNodeContents($("#codeText")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("Selected: press copy on your keyboard"); return false; }
+}
+// after "Order on eBay": say whether the code made it to the clipboard (if not, it's left highlighted to copy by hand)
+async function ebayCopy() {
+  const ok = await copy($("#codeText").textContent, "Code copied, paste it in the Note to Seller at checkout");
+  const n = $("#ebayNote");
+  n.replaceChildren(ok ? "Code copied, paste it in the " : "Copy the highlighted code, then paste it in the ", el("b", {}, "Note to Seller"), " at checkout");
+  n.hidden = false;
 }
 async function openCode(text) {
   const d = await DesignCode.decode(text);
