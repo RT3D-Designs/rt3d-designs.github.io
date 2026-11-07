@@ -8,6 +8,6 @@ window.RT3D_EBAY = {
     Stanley: "https://www.ebay.com.au/itm/257334721356",
     Owala:   "https://www.ebay.com.au/itm/257324428416",
   },
-  bagTags: "",   // RT3D Bag Tags: listing still a draft
-  letters: "",   // RT3D Wall Letters: listing still a draft
+  bagTags: "https://www.ebay.com.au/itm/257840657489",   // RT3D Bag Tags
+  letters: "https://www.ebay.com.au/itm/257840657971",   // RT3D Wall Letters (buyers pick letter count and height on the listing)
 };
