@@ -101,6 +101,7 @@ textarea{font:14px ui-monospace,Consolas,monospace;resize:vertical}
 .seg button{border:0;background:transparent;border-radius:8px;padding:9px 6px;color:var(--muted);font-size:14px}
 .seg button small{display:block;font-size:11.5px;opacity:.85}
 .seg button.on{background:var(--panel);color:var(--text);font-weight:700;box-shadow:0 0 0 1px var(--line2)}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
 
 .btn{border:1px solid var(--line2);background:var(--panel);border-radius:12px;padding:12px 16px;font-weight:600;font-size:15px}
 .btn.primary{background:var(--red);border-color:var(--red);color:var(--on-red)}

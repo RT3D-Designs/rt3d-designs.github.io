@@ -58,6 +58,9 @@ function render() {
   // long tags go by their length, round shapes by their width
   const long = ["name", "luggage", "rect"].includes(t.s);
   document.querySelectorAll("#size button").forEach(x => { x.classList.toggle("on", x.dataset.v === t.z); x.querySelector("small").textContent = `about ${Tags.SIZES[x.dataset.v][long ? "len" : "d"]} mm`; });
+  // text size: only on the fixed shapes (a name-shaped tag is its text); the preview says whether there's room
+  $("#textSizeBox").hidden = t.s === "name";
+  document.querySelectorAll("#textSize button").forEach(x => x.classList.toggle("on", +x.dataset.v === (t.b || 0)));
   $("#attach").replaceChildren(...Object.entries(Tags.LABELS.attach).map(([k, v]) => {
     const soon = k === "loop" && !LOOP_READY;
     return el("button", { type: "button", class: "chip" + (t.a === k ? " on" : "") + (soon ? " soon" : ""), onclick: () => { if (soon) { toast("The built-in TPU loop is coming soon"); return; } t.a = k; changed(); } }, v, soon ? el("small", {}, "soon") : null);
@@ -137,12 +140,20 @@ async function draw() {
     const p = Tags.parts(engineTag(t), 0.25);
     $("#meta").textContent = `About ${Math.round(p.w)} × ${Math.round(p.h)} mm · ${attachName(t.a)}`;
     $("#warn").hidden = !p.warn.length; $("#warn").textContent = p.warn[0] || "";
+    showRoom(p.fit);
     if (view) {
       view.setBase(Tags.soup(p.back, p.stud), { H: p.height, R: Math.max(p.w, p.h) / 2, outerAt: () => 1e9, bandLo: 0, bandHi: 0 });
       view.setScene({ color: hexRgb(colourOf(t.c)[1]), color2: hexRgb(colourOf(t.c)[1]), mode: 0, wall: null, floor: null, part: p.front, partKind: 2, partColor: hexRgb(colourOf(t.k)[1]), sink: 0 });
     }
   } catch (e) { console.error(e); }
   finally { drawing = false; if (drawAgain) { drawAgain = false; draw(); } }
+}
+
+// Bigger and Biggest only when the text can grow by at least a tenth (fit = how far it could grow, from Tags.layout)
+function showRoom(fit) {
+  const room = !(fit < 1.12);
+  document.querySelectorAll('#textSize button:not([data-v="0"])').forEach(x => x.disabled = !room);
+  $("#textSizeHint").hidden = room || cur().s === "name";
 }
 
 // a new tag for the same order: same style and colours as the one on screen, text left for them to type
@@ -228,6 +239,7 @@ async function init() {
     state.cur = Math.min(state.cur, state.tags.length - 1);
   }
   document.querySelectorAll("#size button").forEach(x => x.onclick = () => { cur().z = x.dataset.v; changed(); });
+  document.querySelectorAll("#textSize button").forEach(x => x.onclick = () => { cur().b = +x.dataset.v; changed(); });
   $("#addTag2").onclick = addTag;
   $("#getCode").onclick = askName;
   $("#nameOk").onclick = nameDone;

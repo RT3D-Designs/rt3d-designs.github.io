@@ -98,8 +98,31 @@ const Tags = (() => {
     return { x: w * 0.2, y: h * 0.2, w: w * 0.6, h: h * 0.36 };     // heart
   }
 
-  // tag: { s, z, c, k, a, l: [{ x, font }] } (font = engine font string, e.g. "Arial Black" or "700|Outfit")
-  // returns { back, front, cell, w, h (mm), warn: [...], loop }
+  // How far the text on a fixed shape can grow (1 = not at all, up to 3): the biggest scale at which every letter still
+  // sits inside the rim with a little clear space, and clear of the hole or slot. Tested on a coarse picture.
+  function roomToGrow(shape, w, h, box, drawLines) {
+    const cell = 0.4, m = 5.4;       // the rim's inner edge is 4 mm in from the outline; keep 1.4 mm clear of it
+    const room = canvasMm(w, h, cell);
+    room.g.save(); room.g.translate(w / 2, h / 2); room.g.scale((w - 2 * m) / w, (h - 2 * m) / h); room.g.translate(-w / 2, -h / 2);
+    room.g.fill(shapePath(shape, w, h)); room.g.restore();
+    if (shape === "luggage" || shape === "rect") { room.g.fillStyle = "#000"; room.g.fillRect(0, 0, box.x, h); }
+    const R = room.g.getImageData(0, 0, room.c.width, room.c.height).data;
+    const fits = k => {
+      const t = canvasMm(w, h, cell); drawLines(t.g, k, 0, 0);
+      const a = t.g.getImageData(0, 0, t.c.width, t.c.height).data;
+      for (let i = 0; i < a.length; i += 4) if (a[i] > 100 && R[i] < 200) return false;
+      return true;
+    };
+    if (!fits(1.02)) return 1;
+    if (fits(3)) return 3;
+    let lo = 1.02, hi = 3;
+    for (let n = 0; n < 9; n++) { const mid = (lo + hi) / 2; if (fits(mid)) lo = mid; else hi = mid; }
+    return lo;
+  }
+
+  // tag: { s, z, c, k, a, b, l: [{ x, font }] } (font = engine font string, e.g. "Arial Black" or "700|Outfit";
+  // b = text size on the fixed shapes: 0 or missing standard, 1 bigger, 2 biggest that fits)
+  // returns { back, front, cell, w, h (mm), warn: [...], loop, fit (how far the text could grow, 1 = no room) }
   function layout(tag, cell) {
     const S = SIZES[tag.z] || SIZES.M, warn = [], gap = 0.3;
     const lines = tag.l.filter(l => l.x && l.x.trim());
@@ -122,12 +145,12 @@ const Tags = (() => {
       back.g.fillRect(textX - tw / 2, cy - cap * 0.22, tw, cap * 0.44);
       if (att.loop) {
         const stud = drawStrap(back.g, pad + strap, cy, false, margin + 2);
-        return { back: back.c, front: front.c, cell, w: W, h: H, warn, loop: true, stud };
+        return { back: back.c, front: front.c, cell, w: W, h: H, warn, loop: true, stud, fit: 1 };
       }
       back.g.fill(att.tab(tabX, cy));
       back.g.fillRect(tabX, cy - cap * 0.35, textX - tw / 2 - tabX + 1, cap * 0.7);       // joins the tab to the name
       back.g.globalCompositeOperation = "destination-out"; back.g.fill(att.cut(tabX, cy)); back.g.globalCompositeOperation = "source-over";
-      return { back: back.c, front: front.c, cell, w: W, h: H, warn, loop: false };
+      return { back: back.c, front: front.c, cell, w: W, h: H, warn, loop: false, fit: 1 };
     }
     // fixed shapes
     const round = ["round", "shield", "heart"].includes(tag.s);
@@ -150,7 +173,7 @@ const Tags = (() => {
     const inset = 2.6, sx = (w - 2 * inset) / w, sy = (h - 2 * inset) / h;
     front.g.save(); front.g.translate(ox + w / 2, oy + h / 2); front.g.scale(sx, sy); front.g.translate(-w / 2, -h / 2);
     front.g.strokeStyle = "#fff"; front.g.lineWidth = 1.4 / Math.min(sx, sy); front.g.lineJoin = "round"; front.g.stroke(path); front.g.restore();
-    // the text
+    // the text: a standard size that always fits its box, which tag.b makes bigger as far as the room inside the rim allows
     const box = textBox(tag.s, w, h, round ? { w: 0 } : att);
     const caps = lines.length > 1 ? [box.h * 0.42, box.h * 0.28] : [box.h * 0.5];
     const heights = lines.slice(0, 2).map((l, i) => {
@@ -159,18 +182,24 @@ const Tags = (() => {
       if (em * 0.72 < 5) warn.push(`"${l.x}" is long for this tag: try a bigger size or shorter text.`);
       return em;
     });
-    const total = heights.reduce((s, em) => s + em * 0.72, 0) + (heights.length > 1 ? box.h * 0.12 : 0);
-    let y = oy + box.y + (box.h - total) / 2;
-    lines.slice(0, 2).forEach((l, i) => { const capH = heights[i] * 0.72; Engine.drawText(front.g, l.x, l.font, heights[i], gap, ox + box.x + box.w / 2, y + capH / 2); y += capH + box.h * 0.12; });
+    // the lines as one block, k times the standard size, centred on the text box
+    const spacing = box.h * 0.12;
+    const drawLines = (g, k, x0, y0) => {
+      const total = heights.reduce((s, em) => s + em * 0.72 * k, 0) + (heights.length > 1 ? spacing * k : 0);
+      let y = y0 + box.y + box.h / 2 - total / 2;
+      lines.slice(0, 2).forEach((l, i) => { const capH = heights[i] * 0.72 * k; Engine.drawText(g, l.x, l.font, heights[i] * k, gap, x0 + box.x + box.w / 2, y + capH / 2); y += capH + spacing * k; });
+    };
+    const fit = heights.length ? roomToGrow(tag.s, w, h, box, drawLines) : 1;
+    drawLines(front.g, tag.b === 2 ? fit : tag.b === 1 ? 1 + (fit - 1) / 2 : 1, ox, oy);
     if (att.loop) {
       const stud = round ? drawStrap(back.g, ox + w / 2, oy + rootDepth, true, 2) : drawStrap(back.g, ox, oy + h / 2, false, 2);
-      return { back: back.c, front: front.c, cell, w: W, h: H, warn, loop: true, stud };
+      return { back: back.c, front: front.c, cell, w: W, h: H, warn, loop: true, stud, fit };
     }
     // holes go through both layers
     for (const g of [back.g, front.g]) { g.globalCompositeOperation = "destination-out"; g.fill(att.cut(ax, ay)); g.globalCompositeOperation = "source-over"; }
     // the rim must stay clear of the hole area too: blank the front around the attachment
     front.g.globalCompositeOperation = "destination-out"; front.g.fill(att.tab(ax, ay)); front.g.globalCompositeOperation = "source-over";
-    return { back: back.c, front: front.c, cell, w: W, h: H, warn, loop: false };
+    return { back: back.c, front: front.c, cell, w: W, h: H, warn, loop: false, fit };
   }
 
   // ---- flat parts ----
@@ -273,7 +302,7 @@ const Tags = (() => {
     const back = flatMesh(L.back, cell, toXY(L.back), 0, T_BACK);
     const front = flatMesh(L.front, cell, toXY(L.front), T_BACK, T_BACK + T_FRONT);
     const stud = L.stud ? studMesh(L.stud.x - L.w / 2, L.h / 2 - L.stud.y) : null;
-    return { back, front, stud, w: L.w, h: L.h, height: stud ? stud.top : T_BACK + T_FRONT, warn: L.warn, loop: L.loop };
+    return { back, front, stud, w: L.w, h: L.h, height: stud ? stud.top : T_BACK + T_FRONT, warn: L.warn, loop: L.loop, fit: L.fit };
   }
   // indexed meshes as one plain triangle list (for the 3D view); missing ones are skipped
   const soup = (...meshes) => {

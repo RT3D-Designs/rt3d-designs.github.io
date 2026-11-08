@@ -103,14 +103,15 @@ const DesignCode = (() => {
   // ---- bag tag codes (2026-11-03): "RTT1-" + the same squeeze; read by Tag Studio ----
   // JSON: { n: order name, t: [ tag… ] }, each tag { s: shape (name | luggage | rect | round | shield | heart),
   //   z: size S | M | L, c: backing colour, k: letters colour, a: attachment (key | clip | tie | slot | loop),
-  //   l: [ line… ] (1 for name-shaped, up to 2 for the others), each line { x: text (with emotes), f: font key } }
+  //   l: [ line… ] (1 for name-shaped, up to 2 for the others), each line { x: text (with emotes), f: font key },
+  //   b: text size on the fixed shapes, 1 bigger or 2 biggest that fits (added 2026-11-08; missing = standard, so older codes still read) }
   const TAG_PREFIX = "RTT1-";
   const TAG_SHAPES = ["name", "luggage", "rect", "round", "shield", "heart"], TAG_ATTACH = ["key", "clip", "tie", "slot", "loop"];
   async function encodeTags(design) {
     const slim = {};
     const name = String(design.n || "").trim().slice(0, 40);
     if (name) slim.n = name;
-    slim.t = design.t.map(t => ({ s: t.s, z: t.z, c: t.c, k: t.k, a: t.a,
+    slim.t = design.t.map(t => ({ s: t.s, z: t.z, c: t.c, k: t.k, a: t.a, ...(t.s !== "name" && (t.b === 1 || t.b === 2) ? { b: t.b } : {}),
       l: t.l.filter(l => l.x && l.x.trim()).map(l => ({ x: l.x.trim(), f: l.f })) }));
     return TAG_PREFIX + b64(await pipe(new TextEncoder().encode(JSON.stringify(slim)), new CompressionStream("deflate-raw")));
   }
@@ -124,7 +125,7 @@ const DesignCode = (() => {
     if (!json || !Array.isArray(json.t) || !json.t.length) throw new Error("the code has no tags in it");
     return { code: TAG_PREFIX + m[2], n: String(json.n || "").slice(0, 40), t: json.t.map(t => ({
       s: TAG_SHAPES.includes(t.s) ? t.s : "name", z: ["S", "M", "L"].includes(t.z) ? t.z : "M",
-      c: String(t.c || ""), k: String(t.k || ""), a: TAG_ATTACH.includes(t.a) ? t.a : "key",
+      c: String(t.c || ""), k: String(t.k || ""), a: TAG_ATTACH.includes(t.a) ? t.a : "key", b: t.b === 1 || t.b === 2 ? t.b : 0,
       l: (t.l || []).slice(0, 2).map(l => ({ x: String(l.x || ""), f: FONTS[l.f] ? l.f : "block" })) })) };
   }
 
